@@ -7,28 +7,28 @@
 <meta name="keywords" content="Ekomers Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
 Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel='stylesheet' type='text/css' />
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <!-- Custom Theme files -->
-<link href="css/style.css" rel='stylesheet' type='text/css' />
+<link href="{{ url_for('static', filename='css/style.css') }}" rel='stylesheet' type='text/css' />
 <!-- Custom Theme files -->
 <!--webfont-->
-<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 </head>
 <body>
 <div class="login_header">
 	  	<div class="container">
 	  		<div class="header_top">
 			<div class="logo">
-				<a href="index.html"><img src="images/logo.png" alt=""/></a>
+				<img src="{{ url_for('static', filename='images/logo.png') }}" alt=""/>
 			</div>
 			<div class="top-nav">
-				<span class="menu"><img src="images/menu.png" alt=""/></span>
+				<span class="menu"><img src="{{ url_for('static', filename='images/menu.png') }}" alt=""/></span>
 				<ul class="nav1">
-					<li><a href="index.html" class="scroll">Home </a></li>
-					<li><a href="#method" class="scroll">Future </a></li>
-					<li><a href="#cases" class="active">Swap </a></li>
-					<li><a href="contact.html" class="scroll">Risk Evaluation</a></li>
+					<li class="active"><a href="{{ url_for('home') }}">Home </a></li>
+					<li><a href="{{ url_for('futureTran') }}">Future</a></li>
+					<li><a href="{{ url_for('swapTran') }}">Swap</a></li>
+					<li><a href="{{ url_for('riskEvaluation') }}">Risk Evaluation</a></li>
 				</ul>
 				<!-- script-for-menu -->
 				 <script>

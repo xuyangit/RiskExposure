@@ -20,6 +20,57 @@ body a{
 	-ms-transition: 0.5s all;
 	-moz-transition: 0.5s all;
 }
+/* common style for signup or login pages*/
+i {
+    display: inline-block;
+    width: 20px;
+    height: 21px;
+    vertical-align: middle;
+    background: url(../images/icon.png) 0 0 no-repeat;
+}
+i.error {
+    background-position: 0 -22px;
+}
+i.success {
+    background-position: 0 0;
+}
+.desc span.error {
+    color: #e44444;
+}
+td.line30 {
+    line-height: 30px;
+    padding: 7px 0 8px;
+}
+input[type="password"], input[type="text"] {
+    border: 1px solid #DDDBDB;
+    outline-color:#fb4d01;
+    width: 96%;
+    font-size:0.8125em;
+    padding:10px;
+}
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+.hide {display: none !important;}
 .header {
   background: url(../images/banner.jpg) no-repeat center top;
   -webkit-background-size: cover;
@@ -693,12 +744,10 @@ ul.social_right{
 }
 .footer_bottom{
 	background:#2f2f2f;
-	padding:5em 0;
-	margin-top: -6em;
+	margin-top: 2em;
 }
 .copy {
   text-align: center;
-  margin-top: 3em;
 }
 .copy p {
   color: #fff;
@@ -708,6 +757,8 @@ ul.social_right{
 .copy p a {
   color:#e2b32a;
 }
+/*--userpage--*/
+
 /*--register--*/
 .register {
   margin-top: 7em;
@@ -720,7 +771,6 @@ ul.social_right{
 	font-weight:600;
 }
 .register-top-grid div, .register-bottom-grid div {
-	width: 48%;
 	float: left;
 	margin: 10px 0;
 }
@@ -730,9 +780,10 @@ ul.social_right{
 	padding-bottom: 0.2em;
 	display: block;
 }
-.register-top-grid input[type="text"], .register-bottom-grid input[type="text"] {
+.register-top-grid input[type="text"], .register-bottom-grid input[type="text"], .register-bottom-grid input[type="password"] {
 	border: 1px solid #EEE;
 	outline-color:#FF5B36;
+    float: left;
 	width: 96%;
 	font-size: 1em;
 	padding: 0.5em;
@@ -807,6 +858,20 @@ ul.social_right{
 .register-but{
 	margin-top:1em;
 }
+input[type="submit"] {
+    background: #e2b32a;
+    color: #FFF;
+    font-size: 0.8em;
+    padding: 0.7em 1.2em;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    display: inline-block;
+    text-transform: uppercase;
+    border:none;
+    outline:none;
+}
 .register-but form input[type="submit"] {
 	background:#e2b32a;
 	color: #FFF;
@@ -876,6 +941,13 @@ ul.social_right{
 	width: 96%;
 	font-size:0.8125em;
 	padding:10px;
+}
+.login-right input[type="password"] {
+    border: 1px solid #DDDBDB;
+    outline-color:#fb4d01;
+    width: 96%;
+    font-size:0.8125em;
+    padding:10px;
 }
 .login-right input[type="submit"] {
 	background: #e2b32a;

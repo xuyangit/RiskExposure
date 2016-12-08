@@ -18,10 +18,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <link href="{{ url_for('static', filename='css/style.css') }}" rel='stylesheet' type='text/css'/>
     <link href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}" rel='stylesheet'
           type='text/css'/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/easyui.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/icon.css') }}">
+
     <!-- Custom Theme files -->
     <!--webfont-->
     <script type="text/javascript" src="{{ url_for('static', filename='js/echarts.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.easyui.min.js') }}"></script>
     <script type="text/javascript"
             src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
 </head>
@@ -74,13 +78,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <span><h2>Make a future trade</h2></span>
         <form id="futureForm" name="futureForm">
             <div>
+                <span><label for="futureType">Product type*</label></span>
+                <select name="futureType" id="futureType">
+                    <option>WTI</option>
+                    <option>BRT</option>
+                </select>
+            </div>
+            <div>
                 <span><label for="lotOfFuture">Lots*</label></span>
-                <input name="lotOfFuture" id="lotOfFuture" type="text"
+                <br>
+                <input name="lotOfFuture" id="lotOfFuture" type="text" placeholder="1 lot == 1000 BBL"
                        onkeyup="value=value.replace(/[^\d]/g,'')">
             </div>
             <div>
                 <span><label for="priceOfFuture">Price*</label></span>
-                <input name="priceOfFuture" id="priceOfFuture" type="text">
+                <br>
+                <input name="priceOfFuture" id="priceOfFuture" type="text" placeholder="Price in USD/BBL">
+                <span>$/BBL</span>
             </div>
             <div>
                 <span><label for="futureCode">Product Code*</label></span>
@@ -107,11 +121,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     <div>
                         <span><label for="counterpart">Counterpart*</label></span>
                         <br>
-                        <input name="counterpart" id="counterpart" type="text">
+                        <input name="counterpart" id="counterpart" type="text" placeholder="enter your counterpart name">
                     </div>
                     <div>
                         <span><label for="productType">Product type*</label></span>
-                        <br>
                         <select name="productType" id="productType">
                             <option>WTI</option>
                             <option>BRT</option>
@@ -119,7 +132,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     </div>
                     <div>
                         <span><label for="buyOrSell">Buy/Sell*</label></span>
-                        <select id="buyOrSell">
+                        <select name="buyOrSell" id="buyOrSell">
                             <option>Buy</option>
                             <option>Sell</option>
                         </select>
@@ -128,19 +141,20 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         <span><label for="lotOfSwap">Lots*</label></span>
                         <br>
                         <input name="lotOfSwap" id="lotOfSwap" type="text"
-                               onkeyup="value=value.replace(/[^\d]/g,'')">
+                               onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="1 lot == 1000 BBL">
                     </div>
                     <div>
                         <span><label for="priceOfSwap">Price*</label></span>
                         <br>
-                        <input name="priceOfSwap" id="priceOfSwap" type="text">
+                        <input name="priceOfSwap" id="priceOfSwap" type="text" placeholder="Price in USD/BBL">
+                        <span>$/BBL</span>
                     </div>
                     <div>
                         <span><label for="startDate">Period*</label></span>
                         <br>
-                        <input type="text" id="startDate" style="width: 30%" readonly data-date-format="yyyy-mm">
+                        <input name="startDate" type="text" id="startDate" style="width: 30%" readonly data-date-format="yyyy-mm">
                         <span>  ~  </span>
-                        <input type="text" id="endDate" style="width: 30%" readonly data-date-format="yyyy-mm">
+                        <input name="endDate" type="text" id="endDate" style="width: 30%" readonly data-date-format="yyyy-mm">
                     </div>
                     <div id="swapTip" class="error hide">
                         <i class="error"></i>
@@ -149,14 +163,20 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     </span>
                     </div>
                     <div align="left">
+                        <br>
                         <input type="submit" value="  OK  ">
                     </div>
                 </form>
             </div>
             <div style="float: left">
-                <table>
+                <span><h3>Risk Evaluation:</h3></span>
+                <table id="swapRisk" name="swapRisk" class="gridtable">
                     <tr>
-                        <th>Period</th>
+                        <th>Product Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Work days</th>
+                        <th>Risk</th>
                     </tr>
                 </table>
             </div>
@@ -170,13 +190,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <span id="futureTradeSpan"><h3>You make x future trades:</h3></span>
             <table name="futureRecords" id="futureRecords" class="gridtable">
                 <tbody>
-                <tr>
-                    <th>Trade time</th>
-                    <th>Product code</th>
-                    <th>Lots</th>
-                    <th>Price</th>
-                    <th>Risk</th>
-                </tr>
+                    <tr>
+                        <th>Trade time</th>
+                        <th>Product code</th>
+                        <th>Lots</th>
+                        <th>Price</th>
+                        <th>Risk</th>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -188,8 +208,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         <th>Counterpart</th>
                         <th>Trade time</th>
                         <th>Product code</th>
-                        <th>Lots</th>
-                        <th>Price</th>
+                        <th>Quantity(BBL)</th>
+                        <th>Price($/BBL)</th>
                         <th>Risk</th>
                     </tr>
                 </tbody>
@@ -215,6 +235,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             </tr>
             </tbody>
         </table>
+    </div>
+    <div style="min-height: 80px">
+
     </div>
 </section>
 <div class="footer_bottom">
@@ -243,7 +266,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     }
     function fillCharts() {
         var ajaxCall = new XMLHttpRequest();
-        ajaxCall.open("GET", "tradehistory", false);
+        ajaxCall.open("POST", "tradehistory", false);
         ajaxCall.onreadystatechange = function () {
             jsonObject = JSON.parse(ajaxCall.responseText);
             var numOfFuture = jsonObject.future.length;
@@ -384,9 +407,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             if (data.err && data.err != '') {
                 document.getElementById('swapTipContent').innerText = data.err;
                 $('#swapTip').removeClass('hide');
-            } else if (data.risk) {
-                $('#swapTip').addClass('hide');
-                alert("Your risk is " + data.risk);
+            } else {
+                var len = data.data.length;
+                var swapRisk = document.getElementById('swapRisk');
+                $("#swapRisk tbody #data").remove();
+                for (var i = 0; i < len; i++) {
+                    var row = swapRisk.insertRow(i + 1);
+                    row.id = "data";
+                    row.insertCell(0).innerText = data.data[i]['productCode'];
+                    row.insertCell(1).innerText = data.data[i]['startday'];
+                    row.insertCell(2).innerText = data.data[i]['endday'];
+                    row.insertCell(3).innerText = data.data[i]['wdays'];
+                    row.insertCell(4).innerText = data.data[i]['wdays'] * data.average;
+                }
             }
         }, "json");
     });

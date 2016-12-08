@@ -6,9 +6,12 @@ from flask import Response
 from flask import json
 from flask import redirect, url_for
 from flask import make_response
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+import time
 import jwt
+import calendar
 import pymysql.cursors
+from dateutil import rrule
 
 app = Flask(__name__)
 sqlCli = pymysql.connect(host='localhost',
@@ -18,6 +21,13 @@ sqlCli = pymysql.connect(host='localhost',
                          charset='utf8mb4',
                          cursorclass=pymysql.cursors.DictCursor)
 
+def workdays(start, end, holidays=0, days_off=None):
+    if days_off is None:
+        days_off = 5,6
+    workdays = [x for x in range(7) if x not in days_off]
+    days = rrule.rrule(rrule.DAILY, dtstart=start, until=end,byweekday=workdays)
+    return days.count() - holidays
+
 @app.route("/")
 @app.route("/home")
 def home():
@@ -25,40 +35,85 @@ def home():
 
 @app.route("/swapTran", methods = ["POST"])
 def swapTran():
+    raw = []
+    totaldays = 0
     userid = request.cookies.get('userid')
     if(userid != None and userid != ''):
+        counterpart = request.form['counterpart']
         buyOrSell = request.form['buyOrSell']
         quantity = request.form['lotOfSwap']
         price = request.form['priceOfSwap']
+        productType = request.form['productType']
         startDate = request.form['startDate']
         endDate = request.form['endDate']
+        if(counterpart == None or counterpart == ""):
+            return jsonify(err = "Please enter the counterpart", data = "")
         if(quantity == None or quantity == ""):
-            return jsonify(err = "Please enter the lots", risk = "")
+            return jsonify(err = "Please enter the lots", data = "")
         elif(price == None or price == ""):
-            return jsonify(err = "Please enter the price", risk = "")
+            return jsonify(err = "Please enter the price", data = "")
         price = float(price)
         quantity = int(quantity)
         if(price <= 0):
-            return jsonify(err = "The price should be a positive number", risk = "")
+            return jsonify(err = "The price should be a positive number", data = "")
+        if(startDate == None or startDate == ""):
+            return jsonify(err = "Please enter the startDate", data = "")
+        elif(endDate == None or endDate == ""):
+            return jsonify(err = "Please enter the endDate", data = "")
+        if(buyOrSell == "Buy"):
+            buyOrSell = 1
+        else:
+            buyOrSell = 0
+        (startYear, startMonth, endYear, endMonth) = (int(startDate.split('-')[0]), int(startDate.split('-')[1]),
+                                                      int(endDate.split('-')[0]), int(endDate.split('-')[1]))
         tradeId = jwt.encode({'userid' : userid, 'time' : str(datetime.now())}, 'secret', algorithm = 'HS256')
         try:
             with sqlCli.cursor() as cursor:
-                sql = "select settleDate, productCode from `futureInfo`";
-            with sqlCli.cursor() as cursor:
-                sql = "insert into `future` values ({}, {}, '{}', '{}', '{}', '{}')".format(
-                    quantity, price, futureCode, userid,
-                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"), tradeId)
+                sql = "select min(settleDate), productCode from `info` where datediff(settleDate, '{}') >= 0 and type = '{}'".format(
+                       endDate + "-" + str(calendar.monthrange(endYear, endMonth)[1]) + " 00:00:00", productType)
                 cursor.execute(sql)
-            sqlCli.commit()
-        except:
-            return jsonify(err = "Trade fails because of database error, please retry", risk = "")
+                tpResult = cursor.fetchone()
+                sql = "select settleDate, productCode from `info` where datediff(settleDate, '{}') >= 0 \
+                       and datediff(settleDate, '{}') <= 0 order by settleDate and type = '{}'".format(
+                    startDate + "-01 00:00:00", endDate + "-" + str(calendar.monthrange(endYear, endMonth)[1]) + " 00:00:00", productType)
+                rows = cursor.execute(sql)
+                result = cursor.fetchall()
+                if(tpResult != None and not tpResult in result):
+                    result.append(tpResult)
+                    rows += 1
+                lastday = date(startYear, startMonth, 1)
+                settleDay = None
+                for i in range(rows):
+                    if(i == rows - 1):
+                        settleDay = date(endYear, endMonth, calendar.monthrange(endYear, endMonth)[1])
+                    else:
+                        settleDay = date(result[i]['settleDate'].year, result[i]['settleDate'].month, result[i]['settleDate'].day)
+                    wdays = workdays(lastday, settleDay, 0)
+                    if(wdays == 0 and (settleDay - lastday).days < 0):
+                        continue
+                    totaldays = totaldays + wdays
+                    raw.append({"wdays" : wdays, "productCode" : productType + " " + result[i]['productCode'], "startday" : lastday, "endday": settleDay})
+                    lastday = settleDay + timedelta(1)
+            
+            with sqlCli.cursor() as cursor:
+                for r in raw:
+                    if(r['wdays'] != 0):
+                        sql = "insert into `swap` values ('{}', {}, {}, '{}', '{}', {}, '{}', '{}', '{}', '{}')".format(
+                        counterpart, buyOrSell, price, r['productCode'], userid, 1000 * quantity * r['wdays'] / totaldays,
+                        r['startday'].strftime("%Y-%m-%d"), datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        r['endday'].strftime("%Y-%m-%d"), tradeId)
+                        cursor.execute(sql)
+                        sqlCli.commit()
+        except Exception, e:
+            return jsonify(err = "Trade fails because of database error, please retry", data = "")
         finally:
-            return jsonify(err = "", risk = "{}".format(quantity))
+            return jsonify(err = "", average = 1000.0 * quantity / totaldays, data = raw)
         
 @app.route("/futureTran", methods = ["POST"])
 def futureTran():
     userid = request.cookies.get('userid')
     if(userid != None and userid != ''):
+        productType = request.form['futureType']
         quantity = request.form['lotOfFuture']
         price = request.form['priceOfFuture']
         futureCode = request.form['futureCode']
@@ -74,7 +129,7 @@ def futureTran():
         try:
             with sqlCli.cursor() as cursor:
                 sql = "insert into `future` values ({}, {}, '{}', '{}', '{}', '{}')".format(
-                    quantity, price, futureCode, userid,
+                    quantity, price, productType + " " + futureCode, userid,
                     datetime.now().strftime("%Y-%m-%d %H:%M:%S"), tradeId)
                 cursor.execute(sql)
             sqlCli.commit()
@@ -105,7 +160,7 @@ def getUserInfo():
 def login():
     return render_template("Login.html")
 
-@app.route("/tradehistory")
+@app.route("/tradehistory", methods = ["POST"])
 def tradeHistory():
     userid = request.cookies.get('userid')
     futureResult = []
@@ -132,7 +187,7 @@ def getFutureInfo():
     result = []
     try:
         with sqlCli.cursor() as cursor:
-            sql = "select settleDate, productCode from `futureInfo`"
+            sql = "select settleDate, productCode from `info`"
             rows = cursor.execute(sql)
             for i in range(rows):
                 record = cursor.fetchone()

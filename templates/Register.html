@@ -60,33 +60,36 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <div class="register-top-grid">
                 <h3>Personal Information</h3>
                 <div>
-                    <span><label for="firstname">First Name*</label></span>
-                    <input name="firstname" id="firstname" type="text">
-                    <div class="desc info">
-                        <span>Please enter your firstname</span>
+                    <div>
+                        <span><label for="firstname">First Name*</label></span>
+                        <input name="firstname" id="firstname" type="text">
+                        <div class="desc info">
+                            <span>Please enter your firstname</span>
+                        </div>
+                        <div class="desc success hide">
+                            <i class="success"></i>
+                        </div>
+                        <div class="desc error hide">
+                            <i class="error"></i>
+                            <span class="error error_from_server">This field is required</span>
+                        </div>
                     </div>
-                    <div class="desc success hide">
-                        <i class="success"></i>
-                    </div>
-                    <div class="desc error hide">
-                        <i class="error"></i>
-                        <span class="error error_from_server">This field is required</span>
+                    <div>
+                        <span><label for="lastname">Last Name*</label></span>
+                        <input name="lastname" id="lastname" type="text">
+                        <div class="desc info">
+                            <span>Please enter your lastname</span>
+                        </div>
+                        <div class="desc success hide">
+                            <i class="success"></i>
+                        </div>
+                        <div class="desc error hide">
+                            <i class="error"></i>
+                            <span class="error error_from_server">This field is required</span>
+                        </div>
                     </div>
                 </div>
                 <div>
-                    <span><label for="lastname">Last Name*</label></span>
-                    <input name="lastname" id="lastname" type="text">
-                    <div class="desc info">
-                        <span>Please enter your lastname</span>
-                    </div>
-                    <div class="desc success hide">
-                        <i class="success"></i>
-                    </div>
-                    <div class="desc error hide">
-                        <i class="error"></i>
-                        <span class="error error_from_server">This field is required</span>
-                    </div>
-                </div>
                 <div>
                     <span><label for="eaddress">Email Address*</label></span>
                     <input name="eaddress" id="eaddress" type="text">
@@ -106,46 +109,50 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         </span>
                         <span class="error error_from_server"></span>
                     </div>
+                    </div>
                 </div>
                 <div class="register-bottom-grid">
                     <h3>Login Information</h3>
                     <div>
-                        <span><label for="userid">Username*</label></span>
-                        <input name="userid" id="userid" type="text">
-                        <div class="desc info">
-                            <span>Please enter valid username within 1-14 letters</span>
+                        <div>
+                            <span><label for="userid">Username*</label></span>
+                            <input name="userid" id="userid" type="text">
+                            <div class="desc info">
+                                <span>Please enter valid username within 1-14 letters</span>
+                            </div>
+                            <div class="desc success hide">
+                                <i class="success"></i>
+                            </div>
+                            <div class="desc error hide">
+                                <i class="error"></i>
+                                <span class="error error_USERNAME_ALREADY_EXIST">
+                                This username already exists
+                            </span>
+                                <span class="error error_INVALID_USERNAME">
+                                Wrong format, enter a valid username
+                            </span>
+                                <span class="error error_from_server"></span>
+                            </div>
                         </div>
-                        <div class="desc success hide">
-                            <i class="success"></i>
-                        </div>
-                        <div class="desc error hide">
-                            <i class="error"></i>
-                            <span class="error error_USERNAME_ALREADY_EXIST">
-                            This username already exists
-                        </span>
-                            <span class="error error_INVALID_USERNAME">
-                            Wrong format, enter a valid username
-                        </span>
-                            <span class="error error_from_server"></span>
+                        <div>
+                            <span><label for="password">Password*</label></span>
+                            <input name="password" id="password" type="password">
+                            <div class="desc info">
+                                <span>6-16, case sensitive</span>
+                            </div>
+                            <div class="desc success hide">
+                                <i class="success"></i>
+                            </div>
+                            <div class="desc error hide">
+                                <i class="error"></i>
+                                <span class="error error_PASSWD_LENGTH">
+                                    Wrong length, should within 6-16, case sensitive
+                                </span>
+                                <span class="error error_from_server"></span>
+                            </div>
                         </div>
                     </div>
                     <div>
-                        <span><label for="password">Password*</label></span>
-                        <input name="password" id="password" type="password">
-                        <div class="desc info">
-                            <span>6-16, case sensitive</span>
-                        </div>
-                        <div class="desc success hide">
-                            <i class="success"></i>
-                        </div>
-                        <div class="desc error hide">
-                            <i class="error"></i>
-                            <span class="error error_PASSWD_LENGTH">
-                                Wrong length, should within 6-16, case sensitive
-                            </span>
-                            <span class="error error_from_server"></span>
-                        </div>
-                    </div>
                     <div>
                         <span><label for="confirmPassword">Confirm Password*</label></span>
                         <input name="confirmPassword" id="confirmPassword" type="password">
@@ -163,6 +170,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             <span class="error error_from_server"></span>
                         </div>
                     </div>
+                        </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
